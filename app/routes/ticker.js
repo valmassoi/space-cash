@@ -38,9 +38,7 @@ function getFromThirdPary(apiSource, symbol, res) {
       const apiUrl = thirdPartyApis[apiSource].ticker + symbol + (apiSource === 'coinbase' ? '/spot' : '')
       axios.get(apiUrl)
         .then((result) => {
-          console.log(result.data);
           const price = decodeTickerResponse(apiSource, result.data)
-          console.log('price');
           redisClient.setex(redisKey, REDIS_EXPIRE, price)
           res.end(JSON.stringify({ price, timestamp: new Date() }))
         })
