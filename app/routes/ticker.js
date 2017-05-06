@@ -28,7 +28,7 @@ function getFromThirdPary(apiSource, symbol, res) {
     if (err) throw err
     if (data != null) {
       console.log('stored in redis');
-      res.end(JSON.stringify(data))
+      res.end(JSON.stringify({ price: data }))
     } else {
       console.log('get from 3rd party')
       const apiUrl = thirdPartyApis[apiSource].ticker + symbol

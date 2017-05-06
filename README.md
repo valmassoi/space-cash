@@ -13,7 +13,7 @@ Start server
 redis-server
 redis-cli ping # should print "PONG"
 npm run start
-curl http://localhost:8081 # should print "404!"
+curl http://localhost:8080 # should print "404!"
 ```
 Start iOS
 ```bash

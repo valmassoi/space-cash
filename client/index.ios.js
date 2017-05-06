@@ -4,30 +4,66 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View
-} from 'react-native';
+} from 'react-native'
 
 export default class SpaceCash extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      exchange: 'bitstamp',
+      price: null,
+    }
+  }
+
+  componentDidMount() {
+    this.getPriceFromApi('')
+  }
+
+  setExchange(exchange) {
+    this.setState({ exchange })
+    let symbol = ''
+    switch (exchange) {
+      case 'coinmarketcap':
+        symbol = 'bitcoin'
+        break;
+      case 'shapeshift':
+        symbol = 'btc_ltc'
+        break;
+      default:
+
+    }
+    getPriceFromApi(symbol)
+  }
+
+  getPriceFromApi(symbol) {
+    const { exchange } = this.state
+    const url = `http://localhost:8080/api/ticker/${exchange}/${symbol}`
+    return fetch(url)
+     .then((response) => response.json())
+     .then((responseJson) => {
+       this.setState({ price: responseJson.price })
+     })
+     .catch((error) => {
+       console.error(error)
+     })
+ }
+
   render() {
+    const { price } = this.state
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
+          ${price}
         </Text>
       </View>
-    );
+    )
   }
 }
 
@@ -48,6 +84,6 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
-});
+})
 
-AppRegistry.registerComponent('SpaceCash', () => SpaceCash);
+AppRegistry.registerComponent('SpaceCash', () => SpaceCash)
