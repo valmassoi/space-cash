@@ -7,12 +7,15 @@ const { thirdPartyApis, REDIS_EXPIRE } = require('../settings')
 
 function abstractData(apiSource, result) {
   switch (apiSource) {
-    case 'shapeshift':
-      return result.data.rate
-      break;
+    case 'bitstamp':
+      return result.data.last // TODO mv to settings?
+      break
     case 'coinmarketcap':
       return result.data[0].price_usd
-      break;
+      break
+    case 'shapeshift':
+      return result.data.rate
+      break
     default:
       return result
   }
@@ -42,14 +45,19 @@ function getFromThirdPary(apiSource, symbol, res) {
   })
 }
 
-tickerRouter.get('/shapeshift/:symbol', (req, res) => {
+tickerRouter.get('/bitstamp', (req, res) => {
   const { symbol } = req.params
-  getFromThirdPary('shapeshift', symbol, res)
+  getFromThirdPary('bitstamp', '', res)
 })
 
 tickerRouter.get('/coinmarketcap/:symbol', (req, res) => {
   const { symbol } = req.params
   getFromThirdPary('coinmarketcap', symbol, res)
+})
+
+tickerRouter.get('/shapeshift/:symbol', (req, res) => {
+  const { symbol } = req.params
+  getFromThirdPary('shapeshift', symbol, res)
 })
 
 module.exports = tickerRouter

@@ -1,6 +1,9 @@
 exports.REDIS_EXPIRE = 60 // seconds
 
 exports.thirdPartyApis = {
+  bitstamp: {
+    ticker: 'https://www.bitstamp.net/api/ticker_hour/',
+  },
   coinbase: {
 
   },
