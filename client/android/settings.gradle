@@ -1,0 +1,3 @@
+rootProject.name = 'SpaceCash'
+
+include ':app'
