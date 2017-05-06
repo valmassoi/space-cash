@@ -8,9 +8,9 @@ exports.thirdPartyApis = {
     ticker: 'https://api.coinbase.com/v2/prices/', // + BTC-USD/spot
   },
   coinmarketcap: {
-    ticker: 'https://api.coinmarketcap.com/v1/ticker/', // + symbol
+    ticker: 'https://api.coinmarketcap.com/v1/ticker/', // + bitcoin
   },
   shapeshift: {
-    ticker: 'https://shapeshift.io/rate/', // + symbol
+    ticker: 'https://shapeshift.io/rate/', // + btc_ltc
   }
 }

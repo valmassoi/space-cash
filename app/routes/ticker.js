@@ -51,24 +51,9 @@ function getFromThirdPary(apiSource, symbol, res) {
   })
 }
 
-tickerRouter.get('/bitstamp', (req, res) => {
-  const { symbol } = req.params
-  getFromThirdPary('bitstamp', '', res)
-})
-
-tickerRouter.get('/coinbase/:symbol', (req, res) => {
-  const { symbol } = req.params
-  getFromThirdPary('coinbase', symbol, res)
-})
-
-tickerRouter.get('/coinmarketcap/:symbol', (req, res) => {
-  const { symbol } = req.params
-  getFromThirdPary('coinmarketcap', symbol, res)
-})
-
-tickerRouter.get('/shapeshift/:symbol', (req, res) => {
-  const { symbol } = req.params
-  getFromThirdPary('shapeshift', symbol, res)
+tickerRouter.get('/:exchange/:symbol', (req, res) => {
+  const { exchange, symbol } = req.params
+  getFromThirdPary(exchange, symbol, res)
 })
 
 module.exports = tickerRouter
