@@ -1,0 +1,35 @@
+{
+  "name": "space-cash",
+  "version": "0.1.0",
+  "description": "Bitcoin and Altcoin ticker",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valmassoi/space-cash.git"
+  },
+  "author": "valmassoi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/valmassoi/space-cash/issues"
+  },
+  "homepage": "https://github.com/valmassoi/space-cash#readme",
+  "engines": {
+    "node": "6.10.3"
+  },
+  "dependencies": {
+    "axios": "0.16.1",
+    "body-parser": "1.17.1",
+    "cluster": "0.7.7",
+    "cors": "2.8.3",
+    "express": "4.15.2",
+    "file-loader": "0.11.1",
+    "lodash": "4.17.4",
+    "morgan": "1.8.1",
+    "redis": "2.7.1"
+  },
+  "devDependencies": {}
+}
