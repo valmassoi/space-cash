@@ -12,8 +12,8 @@ exports.redisClient = redis.createClient(REDIS_PORT || 6379)
 
 app.use(morgan('tiny'))
 
-const someroute = require('./app/routes/someroute')
-app.use('/api/someroute', someroute)
+const tickerRoute = require('./app/routes/ticker')
+app.use('/api/ticker', tickerRoute)
 
 app.get('*', (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' })
