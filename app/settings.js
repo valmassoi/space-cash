@@ -5,7 +5,7 @@ exports.thirdPartyApis = {
     ticker: 'https://www.bitstamp.net/api/ticker_hour/',
   },
   coinbase: {
-
+    ticker: 'https://api.coinbase.com/v2/prices/', // + BTC-USD/spot
   },
   coinmarketcap: {
     ticker: 'https://api.coinmarketcap.com/v1/ticker/', // + symbol
