@@ -2,6 +2,7 @@
 
 const tickerRouter = require('express').Router()
 const axios = require('axios')
+const _ = require('lodash')
 const { redisClient } = require('../../server')
 const { thirdPartyApis, REDIS_EXPIRE } = require('../settings')
 
@@ -43,23 +44,39 @@ function getFromThirdPary(apiSource, symbol, res) {
         res.status(400).send({ error: 'Bad Request. Invalid Exchange.' })
       } else {
         axios.get(apiUrl)
-        .then((result) => {
-          return decodeTickerResponse(apiSource, result.data)
-        })
-        .then((price) => {
-          if (!price) { throw new Error('Bad Symbol.') }
-          redisClient.setex(redisKey, REDIS_EXPIRE, price)
-          res.writeHead(200, { 'Content-Type': 'text/plain' })
-          res.end(JSON.stringify({ price, timestamp: new Date() }))
-        })
-        .catch((err) => {
-          console.error(err)
-          res.status(400).send({ error: err.message })
-        })
+          .then((result) => {
+            return decodeTickerResponse(apiSource, result.data)
+          })
+          .then((price) => {
+            if (!price) { throw new Error('Bad Symbol.') }
+            redisClient.setex(redisKey, REDIS_EXPIRE, price)
+            res.writeHead(200, { 'Content-Type': 'text/plain' })
+            res.end(JSON.stringify({ price, timestamp: new Date() }))
+          })
+          .catch((err) => {
+            console.error(err)
+            res.status(400).send({ error: err.message })
+          })
       }
     }
   })
 }
+
+// get currency names: https://poloniex.com/public?command=returnCurrencies
+
+tickerRouter.get('/poloniex/:pair?', (req, res) => {
+  const { pair } = req.params
+  const url = 'https://poloniex.com/public?command=returnTicker'
+  axios.get(url)
+    .then((result) => {
+      const data = result.data[pair] || result.data
+      res.end(JSON.stringify({ data }))
+    })
+    .catch((err) => {
+      console.error(err)
+      res.status(400).send({ error: err.message })
+    })
+})
 
 tickerRouter.get('/:exchange/:symbol?', (req, res) => {
   const { exchange, symbol } = req.params
