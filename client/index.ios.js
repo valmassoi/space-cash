@@ -10,7 +10,8 @@ import {
   StyleSheet,
   Text,
   View,
-  PickerIOS
+  PickerIOS,
+  ActivityIndicator,
 } from 'react-native'
 
 const PickerItemIOS = PickerIOS.Item
@@ -52,7 +53,7 @@ export default class SpaceCash extends Component {
 
   getPriceFromApi(symbol, exchange) {
     this.setState({loading: true})
-    const url = `http://localhost:8080/api/ticker/${exchange}/${symbol}`
+    const url = `http://localhost:8080/api/ticker/${exchange}/${symbol}` //TODO envs
     return fetch(url)
      .then((response) => response.json())
      .then((responseJson) => {
@@ -75,9 +76,14 @@ export default class SpaceCash extends Component {
     ]
     return (
       <View style={styles.container}>
-        <Text style={styles.price}>
-          {loading ? "loading..." : `$${price}`}
-        </Text>
+        {loading ?
+          <ActivityIndicator
+            animating={true}
+            color="white"
+            style={{height: 80}}
+            size="large"
+          /> : <Text style={styles.price}>${price}</Text>
+        }
         <PickerIOS
           itemStyle={styles.picker}
           selectedValue={this.state.exchange}
