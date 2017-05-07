@@ -25,7 +25,6 @@ function decodeTickerResponse(apiSource, data) {
 }
 
 function getFromThirdPary(apiSource, symbol, res) {
-  res.writeHead(200, { 'Content-Type': 'text/plain' })
   const redisKey = apiSource + symbol
   console.log('key', redisKey);
   redisClient.get(redisKey, (err, data) => {
@@ -35,16 +34,25 @@ function getFromThirdPary(apiSource, symbol, res) {
       res.end(JSON.stringify({ price: data }))
     } else {
       console.log('get from 3rd party')
-      const apiUrl = thirdPartyApis[apiSource].ticker + symbol + (apiSource === 'coinbase' ? '/spot' : '')
-      axios.get(apiUrl)
+      const apiUrl = thirdPartyApis[apiSource] && thirdPartyApis[apiSource].ticker + symbol + (apiSource === 'coinbase' ? '/spot' : '')
+      if (!apiUrl) {
+        res.status(400).send({ error: 'Bad Request. Invalid Exchange.' })
+      } else {
+        axios.get(apiUrl)
         .then((result) => {
-          const price = decodeTickerResponse(apiSource, result.data)
+          return decodeTickerResponse(apiSource, result.data)
+        })
+        .then((price) => {
+          if (!price) { throw new Error('Bad Symbol.') }
           redisClient.setex(redisKey, REDIS_EXPIRE, price)
+          res.writeHead(200, { 'Content-Type': 'text/plain' })
           res.end(JSON.stringify({ price, timestamp: new Date() }))
         })
         .catch((err) => {
           console.error(err)
+          res.status(400).send({ error: err.message })
         })
+      }
     }
   })
 }
