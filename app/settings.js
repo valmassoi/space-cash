@@ -12,5 +12,8 @@ exports.thirdPartyApis = {
   },
   shapeshift: {
     ticker: 'https://shapeshift.io/rate/', // + btc_ltc
-  }
+  },
+  winkdex: {
+    ticker: 'https://winkdex.com/api/v0/price',
+  },
 }

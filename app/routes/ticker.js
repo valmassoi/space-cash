@@ -19,6 +19,9 @@ function decodeTickerResponse(apiSource, data) {
     case 'shapeshift':
       return data.rate
       break
+    case 'winkdex':
+      return data.price / 100
+      break
     default:
       return result
   }
@@ -34,7 +37,8 @@ function getFromThirdPary(apiSource, symbol, res) {
       res.end(JSON.stringify({ price: data }))
     } else {
       console.log('get from 3rd party')
-      const apiUrl = thirdPartyApis[apiSource] && thirdPartyApis[apiSource].ticker + symbol + (apiSource === 'coinbase' ? '/spot' : '')
+      const apiUrl = thirdPartyApis[apiSource] &&
+        thirdPartyApis[apiSource].ticker + symbol + (apiSource === 'coinbase' ? '/spot' : '')
       if (!apiUrl) {
         res.status(400).send({ error: 'Bad Request. Invalid Exchange.' })
       } else {
@@ -57,9 +61,9 @@ function getFromThirdPary(apiSource, symbol, res) {
   })
 }
 
-tickerRouter.get('/:exchange/:symbol', (req, res) => {
+tickerRouter.get('/:exchange/:symbol?', (req, res) => {
   const { exchange, symbol } = req.params
-  getFromThirdPary(exchange, symbol, res)
+  getFromThirdPary(exchange, symbol || '', res)
 })
 
 module.exports = tickerRouter
