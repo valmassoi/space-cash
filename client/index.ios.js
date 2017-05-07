@@ -76,8 +76,7 @@ export default class SpaceCash extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.price}>
-          {!loading && `$${price}`}
-          {loading && "loading..."}
+          {loading ? "loading..." : `$${price}`}
         </Text>
         <PickerIOS
           itemStyle={styles.picker}
