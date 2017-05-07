@@ -67,11 +67,11 @@ export default class SpaceCash extends Component {
   render() {
     const { price, loading } = this.state
     const exchanges = [ // TODO mv
-      'bitstamp',
-      'coinbase',
-      'coinmarketcap',
-      'shapeshift',
-      'winkdex',
+      {value: 'bitstamp', label: 'Bitstamp'},
+      {value: 'coinbase', label: 'Coinbase'},
+      {value: 'coinmarketcap', label: 'Coin Market Cap'},
+      {value: 'shapeshift', label: 'ShapeShift'},
+      {value: 'winkdex', label: 'Winkdex'},
     ]
     return (
       <View style={styles.container}>
@@ -85,7 +85,7 @@ export default class SpaceCash extends Component {
         >
           {exchanges.map((exchange) => (
             <PickerItemIOS
-              label={exchange} value={exchange} key={exchange}
+              label={exchange.label} value={exchange.value} key={exchange.value}
             />
           ))}
         </PickerIOS>
