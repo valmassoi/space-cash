@@ -70,7 +70,7 @@ tickerRouter.get('/poloniex/:pair?', (req, res) => {
   axios.get(url)
     .then((result) => {
       const data = result.data[pair] || result.data
-      res.end(JSON.stringify({ data }))
+      res.end(JSON.stringify(data))
     })
     .catch((err) => {
       console.error(err)

@@ -11,10 +11,10 @@ connection.onopen = function (session) {
   // }
   function tickerEvent (args,kwargs) {
     console.log(args)
+    const [currencyPair, last, lowestAsk, highestBid, percentChange, baseVolume, quoteVolume, isFrozen, dayHigh, dayLow] = args
   }
   // session.subscribe('BTC_XMR', marketEvent)
 
-  // currencyPair, last, lowestAsk, highestBid, percentChange, baseVolume, quoteVolume, isFrozen, 24hrHigh, 24hrLow
   session.subscribe('ticker', tickerEvent)
 }
 
