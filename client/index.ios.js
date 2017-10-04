@@ -9,8 +9,12 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  PickerIOS,
+  ActivityIndicator,
 } from 'react-native'
+
+const PickerItemIOS = PickerIOS.Item
 
 export default class SpaceCash extends Component {
 
@@ -19,17 +23,23 @@ export default class SpaceCash extends Component {
     this.state = {
       exchange: 'bitstamp',
       price: null,
+      loading: false,
     }
+    this.setExchange = this.setExchange.bind(this)
   }
 
   componentDidMount() {
-    this.getPriceFromApi('')
+    const { exchange } = this.state
+    this.getPriceFromApi('', exchange)
   }
 
   setExchange(exchange) {
     this.setState({ exchange })
     let symbol = ''
     switch (exchange) {
+      case 'coinbase':
+        symbol = 'BTC-USD'
+        break;
       case 'coinmarketcap':
         symbol = 'bitcoin'
         break;
@@ -37,31 +47,54 @@ export default class SpaceCash extends Component {
         symbol = 'btc_ltc'
         break;
       default:
-
     }
-    getPriceFromApi(symbol)
+    this.getPriceFromApi(symbol, exchange)
   }
 
-  getPriceFromApi(symbol) {
-    const { exchange } = this.state
-    const url = `http://localhost:8080/api/ticker/${exchange}/${symbol}`
+  getPriceFromApi(symbol, exchange) {
+    this.setState({loading: true})
+    const url = `http://localhost:8080/api/ticker/${exchange}/${symbol}` //TODO envs
     return fetch(url)
      .then((response) => response.json())
      .then((responseJson) => {
-       this.setState({ price: responseJson.price })
+       this.setState({ price: responseJson.price, loading: false })
      })
      .catch((error) => {
        console.error(error)
+       this.setState({loading: false})
      })
  }
 
   render() {
-    const { price } = this.state
+    const { price, loading } = this.state
+    const exchanges = [ // TODO mv
+      {value: 'bitstamp', label: 'Bitstamp'},
+      {value: 'coinbase', label: 'Coinbase'},
+      {value: 'coinmarketcap', label: 'Coin Market Cap'},
+      {value: 'shapeshift', label: 'ShapeShift'},
+      {value: 'winkdex', label: 'Winkdex'},
+    ]
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          ${price}
-        </Text>
+        {loading ?
+          <ActivityIndicator
+            animating={true}
+            color="white"
+            style={{height: 80}}
+            size="large"
+          /> : <Text style={styles.price}>${price}</Text>
+        }
+        <PickerIOS
+          itemStyle={styles.picker}
+          selectedValue={this.state.exchange}
+          onValueChange={(exchange) => this.setExchange(exchange)}
+        >
+          {exchanges.map((exchange) => (
+            <PickerItemIOS
+              label={exchange.label} value={exchange.value} key={exchange.value}
+            />
+          ))}
+        </PickerIOS>
       </View>
     )
   }
@@ -71,19 +104,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#039be5',
   },
-  welcome: {
-    fontSize: 20,
+  price: {
+    fontSize: 28,
+    color: 'white',
     textAlign: 'center',
     margin: 10,
   },
-  instructions: {
+  picker: {
+    fontSize: 25,
+    color: 'white',
     textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    fontWeight: 'bold',
+  }
 })
 
 AppRegistry.registerComponent('SpaceCash', () => SpaceCash)
