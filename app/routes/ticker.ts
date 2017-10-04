@@ -1,37 +1,33 @@
 'use strict'
 
-const tickerRouter = require('express').Router()
-const axios = require('axios')
-const _ = require('lodash')
-const { redisClient } = require('../../server')
-const { thirdPartyApis, REDIS_EXPIRE } = require('../settings')
+import { Router } from 'express'
+const tickerRouter: Router = Router()
+import axios from 'axios'
+import * as _ from 'lodash'
+import { redisClient } from '../../server'
+import { thirdPartyApis, REDIS_EXPIRE } from '../settings'
 
-function decodeTickerResponse(apiSource, data) {
+function decodeTickerResponse(apiSource: string, data: any) {
   switch (apiSource) {
     case 'bitstamp':
       return data.last // TODO mv to settings?
-      break
     case 'coinbase':
       return data.data.amount
-      break
     case 'coinmarketcap':
       return data[0].price_usd
-      break
     case 'shapeshift':
       return data.rate
-      break
     case 'winkdex':
       return data.price / 100
-      break
     default:
-      return result
+      return data
   }
 }
 
-function getFromThirdPary(apiSource, symbol, res) {
+function getFromThirdPary(apiSource: string, symbol: string, res: any) {
   const redisKey = apiSource + symbol
   console.log('key', redisKey);
-  redisClient.get(redisKey, (err, data) => {
+  redisClient.get(redisKey, (err: any, data: any) => {
     if (err) throw err
     if (data != null) {
       console.log('stored in redis');
@@ -44,16 +40,16 @@ function getFromThirdPary(apiSource, symbol, res) {
         res.status(400).send({ error: 'Bad Request. Invalid Exchange.' })
       } else {
         axios.get(apiUrl)
-        .then((result) => {
+        .then((result: any) => {
           return decodeTickerResponse(apiSource, result.data)
         })
-        .then((price) => {
+        .then((price: any) => {
           if (!price) { throw new Error('Bad Symbol.') }
           redisClient.setex(redisKey, REDIS_EXPIRE, price)
           res.writeHead(200, { 'Content-Type': 'text/plain' })
           res.end(JSON.stringify({ price, timestamp: new Date() }))
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.error(err)
           res.status(400).send({ error: err.message })
         })
