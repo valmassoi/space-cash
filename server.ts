@@ -1,8 +1,7 @@
 'use strict'
 
-const express = require('express')
-const http = require('http')
-const morgan = require('morgan')
+import * as express from 'express'
+import * as logger from 'morgan'
 
 const app = express()
 
@@ -10,7 +9,7 @@ const redis = require('redis')
 const REDIS_PORT = process.env.REDIS_PORT
 exports.redisClient = redis.createClient(REDIS_PORT || 6379)
 
-app.use(morgan('tiny'))
+app.use(logger('tiny'))
 
 const tickerRoute = require('./app/routes/ticker')
 app.use('/api/ticker', tickerRoute)
@@ -21,7 +20,8 @@ app.get('*', (req, res) => {
 })
 
 const port = process.env.PORT || 8080
-const server = http.Server(app)
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server Running on port: ${port}`)
 })
+
+module.exports = app
