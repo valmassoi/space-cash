@@ -2,6 +2,7 @@
 
 const tickerRouter = require('express').Router()
 const axios = require('axios')
+const _ = require('lodash')
 const { redisClient } = require('../../server')
 const { thirdPartyApis, REDIS_EXPIRE } = require('../settings')
 
@@ -61,9 +62,15 @@ function getFromThirdPary(apiSource, symbol, res) {
   })
 }
 
-tickerRouter.get('/:exchange/:symbol?', (req, res) => {
+tickerRouter.get('/:exchange?/:symbol?', (req, res) => {
   const { exchange, symbol } = req.params
-  getFromThirdPary(exchange, symbol || '', res)
+  if(!exchange) {
+    _.forEach(thirdPartyApis, (url, exchange) => {
+      // getFromThirdPary(exchange, symbol || '', res)
+    })
+  } else {
+    getFromThirdPary(exchange, symbol || '', res)
+  }
 })
 
 module.exports = tickerRouter
