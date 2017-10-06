@@ -6,7 +6,7 @@ Install
 yarn install # npm i yarn -g (if you don't have it)
 brew install redis nvm
 nvm install 6.10.3
-npm install -g react-native-cli ts-node typescript
+npm install -g react-native-cli ts-node typescript forever
 ```
 Start server
 ```bash
